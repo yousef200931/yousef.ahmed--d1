@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="DALL .png" type="image/x-icon">
+    <title>تشفير وفك تشفير النصوص</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    padding: 50px;
+    background: linear-gradient(135deg, #4c4dff, #764ba2);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+header {
+    background-color: #4a00e0;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.menu button {
+    background-color: #6a0dad;
+    border: none;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#menuOptions {
+    background-color: #6a0dad;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+textarea {
+    width: 320px;
+    height: 100px;
+    margin-bottom: 20px;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    font-size: 18px;
+    color: #333;
+    background-color: #f0f0f0;
+    resize: none;
+    transition: transform 0.3s ease;
+}
+
+textarea:hover {
+    transform: scale(1.05);
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 500px;
+}
+
+button {
+    font-size: 18px;
+    padding: 12px 25px;
+    margin: 10px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    background-color: #4c4dff;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+#outputText, #decryptedText {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+p {
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.dark-mode {
+    background: linear-gradient(135deg, #2b2d42, #8d99ae);
+}
+
+.copied {
+    animation: copiedAnimation 1s forwards;
+}
+
+@keyframes copiedAnimation {
+    from { background-color: #e0e0e0; }
+    to { background-color: #76ff7a; }
+}
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="menu">
+            <button onclick="toggleMenu()">☰</button>
+            <div id="menuOptions" class="hidden">
+                <p><a href="#" onclick="showExplanation()">شرح الموقع</a></p>
+                <p><a href="#" onclick="showUsage()">كيفية الاستخدام</a></p>
+            </div>
+        </div>
+    </header>
+    <main>
+        <h1>تشفير وفك تشفير النصوص</h1>
+        
+        <!-- نص مشفر -->
+        <textarea id="inputText" placeholder="أدخل النص المشفر أو العادي هنا"></textarea><br>
+
+        <div class="button-container">
+            <button onclick="encrypt()">تشفير</button>
+            <button onclick="decrypt()">فك التشفير</button>
+            <button onclick="copyOutput()">نسخ النص</button>
+        </div>
+
+        <p>النص الناتج:</p>
+        <textarea id="outputText" readonly></textarea><br>
+
+        <p>النص المفكك التشفير:</p>
+        <textarea id="decryptedText" readonly></textarea><br>
+    </main>
+    <script >const encryptionMap = {
+        'ا': '1', 'ب': '2', 'ت': '3', 'ث': '4', 'ج': '5', 'ح': '6', 'خ': '7', 'د': '8',
+        'ذ': '9', 'ر': '0', 'ز': '!', 'س': '@', 'ش': '#', 'ص': '$', 'ض': '%', 'ط': '^',
+        'ظ': '&', 'ع': '*', 'غ': '(', 'ف': ')', 'ق': '-', 'ك': '_', 'ل': '=', 'م': '+',
+        'ن': '{', 'ه': '}', 'و': '[', 'ي': ']', 'ى': ';', 'ء': ':', 'ئ': '"', 'ة': "'",
+        ' ': ' '
+    };
+    
+    const decryptionMap = {};
+    for (let key in encryptionMap) {
+        decryptionMap[encryptionMap[key]] = key;
+    }
+    
+    function toggleMenu() {
+        const menuOptions = document.getElementById('menuOptions');
+        menuOptions.classList.toggle('hidden');
+    }
+    
+    function showExplanation() {
+        alert('شرح الموقع: هذا الموقع يتيح لك تشفير وفك تشفير النصوص العربية باستخدام رموز وأرقام. أدخل النص في الحقل المخصص للتشفير وستظهر النتيجة أدناه. يمكنك أيضًا إدخال النص المشفر في الحقل المخصص لفك التشفير.');
+    }
+    
+    function showUsage() {
+        alert('كيفية الاستخدام: 1. أدخل النص العربي في الحقل المخصص. 2. اضغط على زر "تشفير" للحصول على النص المشفر. 3. أدخل النص المشفر في الحقل الثاني. 4. اضغط على زر "فك التشفير" للحصول على النص الأصلي.');
+    }
+    
+    function encrypt() {
+        const inputText = document.getElementById('inputText').value;
+        if (!/^[\u0600-\u06FF\s]+$/.test(inputText)) {
+            alert('الرجاء إدخال نص عربي فقط.');
+            return;
+        }
+        let encryptedText = '';
+        for (let char of inputText) {
+            encryptedText += encryptionMap[char] || char; // Use the character itself if not found
+        }
+        document.getElementById('outputText').value = encryptedText;
+    }
+    
+    function decrypt() {
+        const inputText = document.getElementById('inputText').value;
+        let decryptedText = '';
+        for (let char of inputText) {
+            decryptedText += decryptionMap[char] || char; // Use the character itself if not found
+        }
+        document.getElementById('decryptedText').value = decryptedText;
+    }
+    
+    function copyOutput() {
+        const outputText = document.getElementById('outputText');
+        outputText.select();
+        document.execCommand('copy');
+        outputText.classList.add('copied');
+        setTimeout(() => outputText.classList.remove('copied'), 1000);
+        alert('تم نسخ النص!');
+    }
+    </script>
+</body>
+</html>
